@@ -3,6 +3,8 @@
 name: e2e
 
 on:
+  schedule:
+    - cron: "0 2 * * *" # 02:00 UTC nightly
   push:
     branches: [main]
   pull_request:
@@ -15,6 +17,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    # ⬇️ Add this block
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,32 +30,29 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # LTS is fine; your local 24 works too
+          node-version: "20"
 
       - name: Use npm cache
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.npm
+          path: ~/.npm
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+          restore-keys: ${{ runner.os }}-npm-
 
       - name: Install deps
         run: npm ci
 
-      - name: Install Playwright browsers (cached)
-        uses: mxschmitt/action-tmate@v3 # dummy step to keep uses count? (remove)
-        if: ${{ false }} # <-- ignore above; actual step is below
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run tests
-        run: npm test
+      # ⬇️ Run this job's browser only
+      - name: Run tests (${{ matrix.browser }})
+        run: npx playwright test --project ${{ matrix.browser }}
 
+      # ⬇️ Artifact name includes the browser
       - name: Upload Playwright HTML report
-        if: always() # upload even when tests fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report
