@@ -1,4 +1,3 @@
-// tests/api/transfer.spec.ts
 // "Transfer-like" flow using Postman Echo (public echo service).
 // Shows POST (create), PUT (update), and GET (pagination-like params).
 
@@ -8,7 +7,7 @@ test.describe('@api Postman Echo "transfer" demos', () => {
   test('create "transfer" echoes payload + idempotency header', async ({
     request,
   }) => {
-    // Newbies note: this payload simulates a money-movement request.
+    // This payload simulates a money-movement request.
     const payload = {
       from: "A123",
       to: "B456",
@@ -20,7 +19,6 @@ test.describe('@api Postman Echo "transfer" demos', () => {
     const res = await request.post("https://postman-echo.com/post", {
       headers: {
         "Content-Type": "application/json",
-        // Servers/proxies may rewrite header names but should keep the value.
         "Idempotency-Key": idemKey,
       },
       data: payload,
@@ -32,7 +30,6 @@ test.describe('@api Postman Echo "transfer" demos', () => {
     // body.json contains exactly what we sent
     expect(body.json).toEqual(payload);
 
-    // Headers in Postman Echo are lowercased; make a lowercase map to be safe.
     const headersLower: Record<string, string> = Object.fromEntries(
       Object.entries(body.headers || {}).map(([k, v]) => [
         k.toLowerCase(),

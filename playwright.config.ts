@@ -7,12 +7,11 @@ export default defineConfig({
   reporter: [["html", { open: "never" }], ["list"]],
 
   use: {
-    // Helpful artifacts for triage during the interview
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
 
-  baseURL: "https://www.saucedemo.com",
+    baseURL: "https://www.saucedemo.com",
   },
 
   projects: [

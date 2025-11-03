@@ -17,7 +17,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # ⬇️ Add this block
     strategy:
       fail-fast: false
       matrix:
@@ -45,11 +44,9 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      # ⬇️ Run this job's browser only
       - name: Run tests (${{ matrix.browser }})
         run: npx playwright test --project ${{ matrix.browser }}
 
-      # ⬇️ Artifact name includes the browser
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("smoke suite", () => {
-  test("home page has Playwright in the title @smoke", async ({ page }) => {
+test.describe("@smoke smoke suite", () => {
+  test("home page has Playwright in the title", async ({ page }) => {
     await page.goto("https://playwright.dev/");
     await expect(page).toHaveTitle(/Playwright/);
     await expect(
@@ -9,14 +9,14 @@ test.describe("smoke suite", () => {
     ).toBeVisible();
   });
 
-  test("get started has the correct URL @smoke", async ({ page }) => {
+  test("get started has the correct URL", async ({ page }) => {
     await page.goto("https://playwright.dev/");
     const getStartedLink = page.getByRole("link", { name: /get started/i });
     await expect(getStartedLink).toBeVisible();
     await expect(getStartedLink).toHaveAttribute("href", "/docs/intro");
   });
 
-  test("API link navigates to Playwright Library @smoke", async ({ page }) => {
+  test("API link navigates to Playwright Library", async ({ page }) => {
     await page.goto("https://playwright.dev/");
     //await page.waitForTimeout(2000);
     await page.getByRole("link", { name: "API" }).click();
@@ -25,7 +25,7 @@ test.describe("smoke suite", () => {
     );
   });
 
-  test("Python nav link points to language docs @smoke", async ({ page }) => {
+  test("Python nav link points to language docs", async ({ page }) => {
     await page.goto("https://playwright.dev/");
     const languageSwitcher = page
       .getByLabel("Main", { exact: true })
