@@ -12,8 +12,7 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "retain-on-failure",
 
-    // Optional: change later if you demo a real web app
-    baseURL: "https://example.com",
+  baseURL: "https://www.saucedemo.com",
   },
 
   projects: [

@@ -1,33 +1,39 @@
-// tests/pages/LoginPage.ts
 import { Page, expect } from "@playwright/test";
 
 export class LoginPage {
-  constructor(private page: Page) {}
+  constructor(private readonly page: Page) {}
 
-  // Locators grouped here keep tests clean & readable
-  username = this.page.getByLabel("Email");
-  password = this.page.getByLabel("Password");
-  signIn = this.page.getByRole("button", { name: /sign in/i });
+  // Swag Labs exposes stable data-test attributes we can rely on.
+  private readonly usernameField = this.page.locator('[data-test="username"]');
+  private readonly passwordField = this.page.locator('[data-test="password"]');
+  private readonly signInButton = this.page.locator(
+    '[data-test="login-button"]'
+  );
+  private readonly errorBanner = this.page.locator('[data-test="error"]');
 
   async goto() {
-    // BaseURL can be set in playwright.config.ts so we only write relative paths here.
-    await this.page.goto("/login");
+    // Root route renders the login form when baseURL points to saucedemo.
+    await this.page.goto("/");
   }
 
-  async login(email: string, pwd: string) {
-    await this.username.fill(email);
-    await this.password.fill(pwd);
+  async login(username: string, password: string) {
+    await this.fillCredentials(username, password);
     await Promise.all([
-      // Wait for navigation to ensure the app finished handling the login request.
-      this.page.waitForNavigation(),
-      this.signIn.click(),
+      this.page.waitForURL(/\binventory\.html$/),
+      this.signInButton.click(),
     ]);
   }
 
   async expectError(text: string) {
-    // Basic assertion pattern to verify validation or auth errors.
-    await expect(this.page.getByRole("alert")).toHaveText(
-      new RegExp(text, "i")
-    );
+    await expect(this.errorBanner).toContainText(new RegExp(text, "i"));
+  }
+
+  async fillCredentials(username: string, password: string) {
+    await this.usernameField.fill(username);
+    await this.passwordField.fill(password);
+  }
+
+  async submit() {
+    await this.signInButton.click();
   }
 }
