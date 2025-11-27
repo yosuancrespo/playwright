@@ -1,5 +1,3 @@
-# Interview
-
 ## Run locally
 
 - npm ci
